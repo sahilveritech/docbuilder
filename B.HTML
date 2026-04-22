@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sahil Katna Resume</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #000;
+      background: #fff;
+    }
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .left-column {
+      width: 70%;
+      padding-right: 20px;
+      border-right: 1px solid #ccc;
+    }
+    .right-column {
+      width: 30%;
+      padding-left: 20px;
+    }
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 26px;
+      text-transform: uppercase;
+    }
+    .title {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .section {
+      margin-bottom: 25px;
+    }
+    .section h2 {
+      font-size: 16px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #000;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+    }
+    .section h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .section p, .section li {
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 4px 0;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    a {
+      color: #000;
+      text-decoration: none;
+    }
+    .skills, .contact, .education, .languages {
+      font-size: 13px;
+    }
+    .contact p, .skills p, .education p, .languages p {
+      margin: 4px 0;
+    }
+    .project {
+      margin-bottom: 15px;
+    }
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .project-title {
+      font-weight: bold;
+    }
+    .project-date {
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+<div class="container" >
+
+  <!-- LEFT COLUMN -->
+  <div class="left-column">
+    <h1>Sahil Katna</h1>
+    <div class="title">Drupal Developer | 4+ Years Experience</div>
+    <div class="section">
+      <h2>Summary</h2>
+      <p>With 4+ years of experience in Drupal, I have handled complete website lifecycles from setup to deployment. Skilled in both backend and frontend development, I specialize in migrations, theming, API integrations, and performance optimizations.</p>
+    </div>
+
+    <div class="section">
+      <h2>Professional Experience</h2>
+
+      <div class="project">
+        <div class="project-header">
+          <span class="project-title">Techinventive Systems, Remote</span>
+          <span class="project-date">Mar 2025 – Present</span>
+        </div>
+        <p><strong>Drupal Developer</strong></p>
+
+        <p><strong>Project:</strong> OXY ARTS | <strong>Role:</strong>Full Stack Developer</p>
+        <p><strong>Tech Stack:</strong> Twig, Paragraphs, Layout Builder, CKEditor, Responsive Design</p>
+        <ul>
+          <li>Built flexible content layout system with paragraph templates</li>
+          <li>Implemented CKEditor integration for accessible and responsive design</li>
+          <li>Implemented forms, views and paragraph-based components</li>
+          <li>Created custom modules with Event Subscribers, Cron jobs, and Queue API for asynchronous tasks.</li>
+        </ul>
+
+        <p><strong>Project:</strong> UNLV | <strong>Role:</strong> Full Stack Developer</p>
+        <p><strong>Tech Stack:</strong> Twig, Layout Builder, Webform, Group module, SMTP, Acquia</p>
+        <ul>
+          <li>Created admin dashboards and configured group roles/permissions</li>
+          <li>Integrated custom email templates using Acquia platform</li>
+          <li>Developed multiple custom modules</li>
+          <li>Configured Group module to manage access control and editorial workflows by user roles.</li>
+        </ul>
+      </div>
+
+      <div class="project">
+        <div class="project-header">
+          <span class="project-title">Fab Web Studio, Chandigarh</span>
+          <span class="project-date">Jan 2023 – Feb 2025</span>
+        </div>
+        <p><strong>Drupal Developer</strong></p>
+
+        <p><strong>Project:</strong> Hungry Howies | <strong>Role:</strong> Backend + Frontend Developer</p>
+        <p><strong>Tech Stack:</strong> Drupal 10, Custom Modules, Twig, Paragraphs, Views, Webform, Pantheon</p>
+        <ul>
+          <li>Developed multiple custom modules</li>
+          <li>Built theme layer using Twig templates</li>
+          <li>Implemented forms, views and paragraph-based components</li>
+        </ul>
+
+        <p><strong>Project:</strong> Alt Meat | <strong>Role:</strong> Backend Developer</p>
+        <p><strong>Tech Stack:</strong> Drupal 8 to 9, Twig, Newsletter Dashboard, Form alter, Migration</p>
+        <ul>
+          <li>Migrated site from D8 to D9</li>
+          <li>Created dynamic dashboard and newsletter forms</li>
+          <li>Developed template system with Twig</li>
+        </ul>
+
+        <p><strong>Project:</strong> Meating Place | <strong>Role:</strong> Full Stack (Headless) Developer</p>
+        <p><strong>Tech Stack:</strong> Drupal 10, GraphQL, Next.js, REST, Azure</p>
+        <ul>
+          <li>Developed headless API using GraphQL system and custom modules for newsletters</li>
+          <li>Created REST endpoints and integrated with external APIs</li>
+          <li>Deployed solution on Azure cloud platform</li>
+        </ul>
+      </div>
+
+      <div class="project">
+        <div class="project-header">
+          <span class="project-title">SV Infotech, Chandigarh</span>
+          <span class="project-date">Jul 2021 – Jan 2023</span>
+        </div>
+        <p><strong>Junior Drupal Developer</strong></p>
+
+        <p><strong>Project:</strong> CPA Moms | <strong>Role:</strong> Drupal Migration Developer</p>
+        <p><strong>Tech Stack:</strong> Drupal 7 to 10, Twig, View Hooks, SMTP, Custom Module, Pantheon</p>
+        <ul>
+          <li>Migrated site from D8 to D10</li>
+          <li>Developed custom theme and modules</li>
+          <li>Implemented SMTP and reusable Twig blocks</li>
+        </ul>
+
+        <p><strong>Project:</strong> UMass | <strong>Role:</strong> Theming Developer</p>
+        <p><strong>Tech Stack:</strong> Drupal 9, Twig, CKEditor, Admin Dashboard, Solr, Paragraphs, Pantheon</p>
+        <ul>
+          <li>Designed theme layer using Twig templates</li>
+          <li>Configured dashboard, CKEditor, and SMTP</li>
+          <li>Built reusable paragraph components</li>
+          <li>Hosted solution on Pantheon platform</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-column">
+    <div class="contact section">
+      <h2>Contact</h2>
+      <p><a href="https://www.linkedin.com/in/sahil-katna-02658a17b/">LinkedIn</a></p>
+      <p>Email: sahilkatna495@gmail.com</p>
+      <p>Phone: +91 7591860133</p>
+    </div>
+
+    <div class="skills section">
+      <h2>Skills</h2>
+      <p>Drupal 7, 8, 9, 10 ,11</p>
+      <p>PHP </p>
+      <p>MySQL</p>
+      <p>JavaScript, jQuery</p>
+      <p>WordPress</p>
+      <p> HTML </p>
+      <p>CSS, SASS</p>
+      <p>Tailwind CSS, Material UI, Bootstrap</p>
+      <p>Responsive Design</p>
+      <p>Next.js, React</p>
+      <p> Git, JIRA</p>
+    </div>
+
+    <div class="education section">
+      <h2>Education</h2>
+      <p>B.Tech (ECE)</p>
+      <p>Green Hills Engineering College</p>
+    </div>
+
+    <div class="languages section">
+      <h2>Languages</h2>
+      <p>Hindi, English</p>
+    </div>
+  </div>
+</div>
+<script>
+  function downloadPDF() {
+    const element = document.querySelector('.container');
+    const opt = {
+      margin: [5, 5, 5, 5],
+      filename: 'resume-sahil-katna.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all'] }
+    };
+    html2pdf().set(opt).from(element).save();
+  }
+</script>
+
+<div class="subheader" onclick="downloadPDF()">Download PDF</div>
+</body>
+</html>
