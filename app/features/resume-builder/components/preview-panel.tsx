@@ -42,7 +42,7 @@ export function PreviewPanel({ api }: { api: ResumeFormApi }) {
   };
 
   return (
-    <div className="flex flex-col h-full min-h-[560px]">
+    <div className="flex flex-col h-full">
       <div className="mb-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-3 shadow-[var(--shadow-soft)]">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
@@ -76,7 +76,7 @@ export function PreviewPanel({ api }: { api: ResumeFormApi }) {
           />
         </div>
       </div>
-      <div className="flex-1 min-h-[600px] rounded-lg border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface)]">
+      <div className="h-[500px] rounded-lg border border-[var(--color-border)] overflow-hidden bg-[#f3f4f6]">
         {isClient ? (
           <Suspense fallback={<Loader label="Preparing preview…" />}>
             <PDFViewer
@@ -84,7 +84,7 @@ export function PreviewPanel({ api }: { api: ResumeFormApi }) {
               width="100%"
               height="100%"
               showToolbar={false}
-              style={{ border: "none", backgroundColor: "transparent" }}
+              style={{ border: "none", backgroundColor: "#f3f4f6" }}
             >
               {doc}
             </PDFViewer>
