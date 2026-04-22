@@ -1,7 +1,7 @@
-import { lazy, Suspense, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Download, FileImage, FileText } from "lucide-react";
 import type { CardFormApi } from "../hooks/use-card-form";
-import { getCardTemplate } from "../templates/map";
+import { getCardTemplate, preloadCardTemplate } from "../templates/map";
 import { HtmlCard } from "./html-card";
 import { Button } from "~/components/ui/button";
 import { Tabs } from "~/components/ui/tabs";
@@ -9,6 +9,7 @@ import { Loader } from "~/components/common/loader";
 import { useToast } from "~/components/ui/toast";
 import { useIsClient } from "~/hooks/use-is-client";
 import { downloadBlob, downloadDataUrl } from "~/lib/utils";
+import { useDebounce } from "~/hooks/use-debounce";
 import {
   Document as PdfDocument,
   Page as PdfPage,
@@ -26,18 +27,31 @@ export function PreviewPanel({ api }: { api: CardFormApi }) {
   const { toast } = useToast();
   const [side, setSide] = useState<Side>("front");
   const [downloading, setDownloading] = useState(false);
+  const [isTemplateLoading, setIsTemplateLoading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const previewState = useDebounce(state, 180);
 
   const entry = getCardTemplate(state.template);
   const Template = entry.component;
 
+  useEffect(() => {
+    let active = true;
+    setIsTemplateLoading(true);
+    preloadCardTemplate(state.template).finally(() => {
+      if (active) setIsTemplateLoading(false);
+    });
+    return () => {
+      active = false;
+    };
+  }, [state.template]);
+
   const pdfDoc = (
-    <PdfDocument title={`${state.name || "business-card"} card`}>
+    <PdfDocument title={`${previewState.name || "business-card"} card`}>
       <PdfPage size={[252, 144]} style={{ padding: 0 }}>
-        <Template data={state} side="front" />
+        <Template data={previewState} side="front" />
       </PdfPage>
       <PdfPage size={[252, 144]} style={{ padding: 0 }}>
-        <Template data={state} side="back" />
+        <Template data={previewState} side="back" />
       </PdfPage>
     </PdfDocument>
   );
@@ -46,7 +60,17 @@ export function PreviewPanel({ api }: { api: CardFormApi }) {
     setDownloading(true);
     try {
       const { pdf } = await import("@react-pdf/renderer");
-      const blob = await pdf(pdfDoc).toBlob();
+      const ResolvedTemplate = await preloadCardTemplate(state.template);
+      const blob = await pdf(
+        <PdfDocument title={`${state.name || "business-card"} card`}>
+          <PdfPage size={[252, 144]} style={{ padding: 0 }}>
+            <ResolvedTemplate data={state} side="front" />
+          </PdfPage>
+          <PdfPage size={[252, 144]} style={{ padding: 0 }}>
+            <ResolvedTemplate data={state} side="back" />
+          </PdfPage>
+        </PdfDocument>,
+      ).toBlob();
       const safeName = (state.name || "business-card")
         .toLowerCase()
         .replace(/\s+/g, "-");
@@ -132,18 +156,22 @@ export function PreviewPanel({ api }: { api: CardFormApi }) {
         />
       </div>
 
-      <div className="rounded-lg border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface)] h-72">
+      <div className="rounded-lg border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface)] h-96">
         {isClient ? (
           <Suspense fallback={<Loader label="Preparing PDF preview…" />}>
-            <PDFViewer
-              key={state.template}
-              width="100%"
-              height="100%"
-              showToolbar={false}
-              style={{ border: "none", backgroundColor: "transparent" }}
-            >
-              {pdfDoc}
-            </PDFViewer>
+            {isTemplateLoading ? (
+              <Loader label="Switching template…" />
+            ) : (
+              <PDFViewer
+                key={state.template}
+                width="100%"
+                height="100%"
+                showToolbar={false}
+                style={{ border: "none", backgroundColor: "transparent" }}
+              >
+                {pdfDoc}
+              </PDFViewer>
+            )}
           </Suspense>
         ) : (
           <Loader label="Preparing PDF preview…" />

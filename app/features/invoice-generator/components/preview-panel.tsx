@@ -1,10 +1,11 @@
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Download } from "lucide-react";
 import type { InvoiceFormApi } from "../hooks/use-invoice-form";
 import { useTabNavigation } from "../hooks/use-tab-navigation";
 import {
   INVOICE_TEMPLATES,
   getInvoiceTemplate,
+  preloadInvoiceTemplate,
   type InvoiceTemplateKey,
 } from "../templates/map";
 import { computeTotals } from "../templates/prepare-data";
@@ -14,6 +15,7 @@ import { Loader } from "~/components/common/loader";
 import { useIsClient } from "~/hooks/use-is-client";
 import { downloadBlob } from "~/lib/utils";
 import { useToast } from "~/components/ui/toast";
+import { useDebounce } from "~/hooks/use-debounce";
 
 const PDFViewer = lazy(() =>
   import("@react-pdf/renderer").then((m) => ({ default: m.PDFViewer })),
@@ -27,18 +29,34 @@ export function PreviewPanel({ api }: { api: InvoiceFormApi }) {
     "tab",
     state.template,
   );
+  const [isTemplateLoading, setIsTemplateLoading] = useState(false);
 
   const active = (templateKey as InvoiceTemplateKey) || state.template;
+  const previewState = useDebounce(state, 180);
   const entry = getInvoiceTemplate(active);
   const Template = entry.component;
 
-  const totals = useMemo(() => computeTotals(state), [state]);
-  const doc = <Template data={state} totals={totals} />;
+  const totals = useMemo(() => computeTotals(previewState), [previewState]);
+  const doc = <Template data={previewState} totals={totals} />;
+
+  useEffect(() => {
+    let activeEffect = true;
+    setIsTemplateLoading(true);
+    preloadInvoiceTemplate(active).finally(() => {
+      if (activeEffect) setIsTemplateLoading(false);
+    });
+    return () => {
+      activeEffect = false;
+    };
+  }, [active]);
 
   const handleDownload = async () => {
     try {
       const { pdf } = await import("@react-pdf/renderer");
-      const blob = await pdf(doc).toBlob();
+      const ResolvedTemplate = await preloadInvoiceTemplate(active);
+      const blob = await pdf(
+        <ResolvedTemplate data={state} totals={computeTotals(state)} />,
+      ).toBlob();
       const filename = `invoice-${state.number || "draft"}.pdf`;
       downloadBlob(blob, filename);
       toast({
@@ -56,7 +74,7 @@ export function PreviewPanel({ api }: { api: InvoiceFormApi }) {
   };
 
   return (
-    <div className="flex flex-col h-full min-h-[520px]">
+    <div className="flex flex-col h-full min-h-[620px]">
       <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
         <Tabs
           ariaLabel="Invoice template"
@@ -78,18 +96,22 @@ export function PreviewPanel({ api }: { api: InvoiceFormApi }) {
           Download PDF
         </Button>
       </div>
-      <div className="flex-1 min-h-[560px] rounded-lg border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface)]">
+      <div className="flex-1 min-h-[680px] rounded-lg border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface)]">
         {isClient ? (
           <Suspense fallback={<Loader label="Preparing preview…" />}>
-            <PDFViewer
-              key={active}
-              width="100%"
-              height="100%"
-              showToolbar={false}
-              style={{ border: "none", backgroundColor: "transparent" }}
-            >
-              {doc}
-            </PDFViewer>
+            {isTemplateLoading ? (
+              <Loader label="Switching template…" />
+            ) : (
+              <PDFViewer
+                key={active}
+                width="100%"
+                height="100%"
+                showToolbar={false}
+                style={{ border: "none", backgroundColor: "transparent", height: "680px" }}
+              >
+                {doc}
+              </PDFViewer>
+            )}
           </Suspense>
         ) : (
           <Loader label="Preparing preview…" />

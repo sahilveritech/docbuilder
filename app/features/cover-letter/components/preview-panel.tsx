@@ -1,9 +1,10 @@
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Download } from "lucide-react";
 import type { CoverLetterFormApi } from "../hooks/use-cover-letter-form";
 import {
   LETTER_TEMPLATES,
   getLetterTemplate,
+  preloadLetterTemplate,
   type LetterTemplateKey,
 } from "../templates/map";
 import { Button } from "~/components/ui/button";
@@ -12,6 +13,7 @@ import { Loader } from "~/components/common/loader";
 import { useIsClient } from "~/hooks/use-is-client";
 import { useToast } from "~/components/ui/toast";
 import { downloadBlob } from "~/lib/utils";
+import { useDebounce } from "~/hooks/use-debounce";
 
 const PDFViewer = lazy(() =>
   import("@react-pdf/renderer").then((m) => ({ default: m.PDFViewer })),
@@ -21,15 +23,29 @@ export function PreviewPanel({ api }: { api: CoverLetterFormApi }) {
   const { state, updateField } = api;
   const isClient = useIsClient();
   const { toast } = useToast();
+  const [isTemplateLoading, setIsTemplateLoading] = useState(false);
+  const previewState = useDebounce(state, 180);
 
   const entry = getLetterTemplate(state.template);
   const Template = entry.component;
-  const doc = useMemo(() => <Template data={state} />, [Template, state]);
+  const doc = useMemo(() => <Template data={previewState} />, [Template, previewState]);
+
+  useEffect(() => {
+    let active = true;
+    setIsTemplateLoading(true);
+    preloadLetterTemplate(state.template).finally(() => {
+      if (active) setIsTemplateLoading(false);
+    });
+    return () => {
+      active = false;
+    };
+  }, [state.template]);
 
   const handleDownload = async () => {
     try {
       const { pdf } = await import("@react-pdf/renderer");
-      const blob = await pdf(doc).toBlob();
+      const ResolvedTemplate = await preloadLetterTemplate(state.template);
+      const blob = await pdf(<ResolvedTemplate data={state} />).toBlob();
       const safe = (state.sender.name || "cover-letter")
         .toLowerCase()
         .replace(/\s+/g, "-");
@@ -45,7 +61,7 @@ export function PreviewPanel({ api }: { api: CoverLetterFormApi }) {
   };
 
   return (
-    <div className="flex flex-col h-full min-h-[520px]">
+    <div className="flex flex-col h-full min-h-[620px]">
       <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
         <Tabs
           ariaLabel="Cover letter template"
@@ -64,18 +80,22 @@ export function PreviewPanel({ api }: { api: CoverLetterFormApi }) {
           Download PDF
         </Button>
       </div>
-      <div className="flex-1 min-h-[560px] rounded-lg border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface)]">
+      <div className="flex-1 min-h-[680px] rounded-lg border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface)]">
         {isClient ? (
           <Suspense fallback={<Loader label="Preparing preview…" />}>
-            <PDFViewer
-              key={state.template}
-              width="100%"
-              height="100%"
-              showToolbar={false}
-              style={{ border: "none", backgroundColor: "transparent" }}
-            >
-              {doc}
-            </PDFViewer>
+            {isTemplateLoading ? (
+              <Loader label="Switching template…" />
+            ) : (
+              <PDFViewer
+                key={state.template}
+                width="100%"
+                height="100%"
+                showToolbar={false}
+                style={{ border: "none", backgroundColor: "transparent", height: "680px" }}
+              >
+                {doc}
+              </PDFViewer>
+            )}
           </Suspense>
         ) : (
           <Loader label="Preparing preview…" />

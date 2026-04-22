@@ -20,6 +20,9 @@ export function SkillsForm({ api }: { api: ResumeFormApi }) {
           Section
         </p>
         <p className="text-sm font-medium">Skills, languages, and education</p>
+        <p className="text-xs text-[var(--color-muted)] mt-1">
+          Prioritize relevant keywords for ATS matching.
+        </p>
       </div>
       <Textarea
         label="Technical skills"

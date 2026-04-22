@@ -14,6 +14,9 @@ export function ProjectsForm({ api }: { api: ResumeFormApi }) {
           Section
         </p>
         <p className="text-sm font-medium">Projects ({state.projects.length})</p>
+        <p className="text-xs text-[var(--color-muted)] mt-1">
+          Add high-impact projects with stack and measurable outcome.
+        </p>
       </div>
 
       {state.projects.map((project) => (

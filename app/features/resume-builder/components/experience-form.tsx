@@ -15,6 +15,9 @@ export function ExperienceForm({ api }: { api: ResumeFormApi }) {
         <p className="text-sm font-medium">
           Work experience ({state.experiences.length})
         </p>
+        <p className="text-xs text-[var(--color-muted)] mt-1">
+          Keep 2-4 concise bullet points focused on impact.
+        </p>
       </div>
       {state.experiences.map((exp) => (
         <div

@@ -12,6 +12,9 @@ export function PersonalForm({ api }: { api: ResumeFormApi }) {
           Section
         </p>
         <p className="text-sm font-medium">Personal & headline</p>
+        <p className="text-xs text-[var(--color-muted)] mt-1">
+          Write a headline that clearly states your role and seniority.
+        </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <Input

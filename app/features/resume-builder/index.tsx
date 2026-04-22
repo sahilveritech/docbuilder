@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   BriefcaseBusiness,
   CircleUserRound,
   GraduationCap,
   Layers3,
+  Sparkles,
   RotateCcw,
 } from "lucide-react";
 import { PageHeader } from "~/components/common/page-header";
@@ -23,9 +24,25 @@ type FormTab = "personal" | "experience" | "projects" | "skills";
 
 export default function ResumeBuilder() {
   const api = useResumeForm();
+  const { state } = api;
   const { toast } = useToast();
   const [tab, setTab] = useState<FormTab>("personal");
   const [confirmReset, setConfirmReset] = useState(false);
+
+  const completion = useMemo(() => {
+    const checks = [
+      !!state.name,
+      !!state.title,
+      !!state.email,
+      !!state.summary,
+      state.experiences.length > 0,
+      state.projects.length > 0,
+      state.education.length > 0,
+      !!state.skills,
+    ];
+    const done = checks.filter(Boolean).length;
+    return Math.round((done / checks.length) * 100);
+  }, [state]);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -34,8 +51,12 @@ export default function ResumeBuilder() {
         title="Create a polished one-page resume"
         description="Use guided sections to build a clean, ATS-friendly resume with instant PDF preview."
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
             <Badge variant="brand">Local-only data</Badge>
+            <Badge variant="outline">
+              <Sparkles className="h-3 w-3" />
+              {completion}% complete
+            </Badge>
             <Button
               variant="secondary"
               size="sm"
@@ -48,8 +69,16 @@ export default function ResumeBuilder() {
         }
       />
 
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Stat label="Experience" value={state.experiences.length} />
+        <Stat label="Projects" value={state.projects.length} />
+        <Stat label="Education" value={state.education.length} />
+        <Stat label="Template" value={state.template} className="capitalize" />
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
         <div className="space-y-4">
+          <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-2">
           <Tabs
             variant="underline"
             ariaLabel="Resume sections"
@@ -94,6 +123,7 @@ export default function ResumeBuilder() {
               },
             ]}
           />
+          </div>
           <div className="p-5 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] shadow-[var(--shadow-soft)]">
             {tab === "personal" && <PersonalForm api={api} />}
             {tab === "experience" && <ExperienceForm api={api} />}
@@ -133,6 +163,27 @@ export default function ResumeBuilder() {
           This only clears the resume data saved in your browser.
         </p>
       </Modal>
+    </div>
+  );
+}
+
+function Stat({
+  label,
+  value,
+  className,
+}: {
+  label: string;
+  value: string | number;
+  className?: string;
+}) {
+  return (
+    <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2">
+      <p className="text-[11px] uppercase tracking-wider text-[var(--color-muted)]">
+        {label}
+      </p>
+      <p className={`text-sm font-semibold text-[var(--color-fg)] ${className ?? ""}`}>
+        {value}
+      </p>
     </div>
   );
 }
