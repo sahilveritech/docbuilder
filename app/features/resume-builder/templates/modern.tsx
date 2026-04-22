@@ -45,6 +45,7 @@ const makeStyles = (accent: string) =>
     bullet: { marginTop: 1.5, lineHeight: 1.3 },
     roleMeta: { color: "#6B7280", marginBottom: 3 },
     expBlock: { marginBottom: 10 },
+    projectBlock: { marginBottom: 8 },
     sidebarBlock: { marginBottom: 10 },
     sidebarTitle: { fontFamily: "Helvetica-Bold", fontSize: 9.5, color: "#0F172A" },
     sidebarText: { fontSize: 9, color: "#111827", lineHeight: 1.3, marginTop: 2 },
@@ -101,6 +102,24 @@ export function ModernResumeTemplate({ data }: ResumeTemplateProps) {
                         {idx + 1}. {line}
                       </Text>
                     ))}
+                </View>
+              ))}
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.heading}>Projects</Text>
+              {data.projects.map((project) => (
+                <View key={project.id} style={styles.projectBlock}>
+                  <Text style={styles.role}>
+                    {project.name}
+                    {project.role ? ` | ${project.role}` : ""}
+                  </Text>
+                  {project.skillsUsed ? (
+                    <Text style={styles.muted}>Tech: {project.skillsUsed}</Text>
+                  ) : null}
+                  {project.description ? (
+                    <Text style={styles.paragraph}>{project.description}</Text>
+                  ) : null}
                 </View>
               ))}
             </View>

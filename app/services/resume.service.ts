@@ -17,6 +17,14 @@ const EducationSchema = z.object({
   endYear: z.string().default(""),
 });
 
+const ProjectSchema = z.object({
+  id: z.string(),
+  name: z.string().default(""),
+  role: z.string().default(""),
+  skillsUsed: z.string().default(""),
+  description: z.string().default(""),
+});
+
 export const ResumeSchema = z.object({
   name: z.string().default(""),
   title: z.string().default(""),
@@ -29,6 +37,7 @@ export const ResumeSchema = z.object({
   skills: z.string().default(""),
   languages: z.string().default(""),
   experiences: z.array(ExperienceSchema).default([]),
+  projects: z.array(ProjectSchema).default([]),
   education: z.array(EducationSchema).default([]),
   template: z
     .enum(["classic", "modern", "split-reference"])
@@ -39,6 +48,7 @@ export const ResumeSchema = z.object({
 export type ResumeData = z.infer<typeof ResumeSchema>;
 export type ResumeExperience = z.infer<typeof ExperienceSchema>;
 export type ResumeEducation = z.infer<typeof EducationSchema>;
+export type ResumeProject = z.infer<typeof ProjectSchema>;
 
 const STORAGE_KEY = "toolkit-lite:resume:v1";
 type Listener = () => void;
@@ -81,6 +91,24 @@ export function createEmptyResume(): ResumeData {
         endDate: "2022",
         bullets:
           "Developed end-to-end features and optimized API integrations.\nCollaborated with product/design to ship customer-facing workflows.",
+      },
+    ],
+    projects: [
+      {
+        id: uid(),
+        name: "TaskFlow Dashboard",
+        role: "Frontend Developer (React)",
+        skillsUsed: "React, TypeScript, Tailwind CSS, React Router, Chart.js",
+        description:
+          "Built a responsive project-management dashboard with filters, charts, and reusable UI components to improve team productivity tracking.",
+      },
+      {
+        id: uid(),
+        name: "University CMS Revamp",
+        role: "Drupal Developer",
+        skillsUsed: "Drupal 10, PHP, Twig, Views, Paragraphs, MySQL",
+        description:
+          "Delivered a Drupal migration with custom content models and optimized page performance for an editorial-heavy university website.",
       },
     ],
     education: [

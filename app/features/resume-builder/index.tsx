@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   CircleUserRound,
   GraduationCap,
+  Layers3,
   RotateCcw,
 } from "lucide-react";
 import { PageHeader } from "~/components/common/page-header";
@@ -14,10 +15,11 @@ import { Badge } from "~/components/ui/badge";
 import { useResumeForm } from "./hooks/use-resume-form";
 import { PersonalForm } from "./components/personal-form";
 import { ExperienceForm } from "./components/experience-form";
+import { ProjectsForm } from "./components/projects-form";
 import { SkillsForm } from "./components/skills-form";
 import { PreviewPanel } from "./components/preview-panel";
 
-type FormTab = "personal" | "experience" | "skills";
+type FormTab = "personal" | "experience" | "projects" | "skills";
 
 export default function ResumeBuilder() {
   const api = useResumeForm();
@@ -73,6 +75,15 @@ export default function ResumeBuilder() {
                 ),
               },
               {
+                value: "projects",
+                label: (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Layers3 className="h-3.5 w-3.5" />
+                    Projects
+                  </span>
+                ),
+              },
+              {
                 value: "skills",
                 label: (
                   <span className="inline-flex items-center gap-1.5">
@@ -86,6 +97,7 @@ export default function ResumeBuilder() {
           <div className="p-5 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] shadow-[var(--shadow-soft)]">
             {tab === "personal" && <PersonalForm api={api} />}
             {tab === "experience" && <ExperienceForm api={api} />}
+            {tab === "projects" && <ProjectsForm api={api} />}
             {tab === "skills" && <SkillsForm api={api} />}
           </div>
         </div>

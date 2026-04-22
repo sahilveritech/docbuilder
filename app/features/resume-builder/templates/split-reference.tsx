@@ -58,7 +58,9 @@ const makeStyles = (accent: string) =>
     },
     roleLine: { fontSize: 9.2, marginBottom: 2 },
     paragraph: { lineHeight: 1.35 },
+    projectDescription: { lineHeight: 1.2, marginTop: 1 },
     bullet: { marginTop: 1.5, lineHeight: 1.28 },
+    projectBlock: { marginBottom: 8 },
     rightText: { fontSize: 9.1, marginTop: 2, lineHeight: 1.28 },
     rightItem: { marginBottom: 9 },
     link: { color: accent, fontFamily: "Helvetica-Bold" },
@@ -103,6 +105,28 @@ export function SplitReferenceResumeTemplate({ data }: ResumeTemplateProps) {
                         • {line}
                       </Text>
                     ))}
+                </View>
+              ))}
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionHeading}>Projects</Text>
+              {data.projects.map((project) => (
+                <View key={project.id} style={styles.projectBlock}>
+                  <Text style={styles.companyLine}>
+                    {normalizeText(project.name)}
+                    {project.role ? ` | ${normalizeText(project.role)}` : ""}
+                  </Text>
+                  {project.skillsUsed ? (
+                    <Text style={styles.dateLine}>
+                      Skills: {normalizeText(project.skillsUsed)}
+                    </Text>
+                  ) : null}
+                  {project.description ? (
+                    <Text style={styles.projectDescription}>
+                      {normalizeText(project.description)}
+                    </Text>
+                  ) : null}
                 </View>
               ))}
             </View>
@@ -159,8 +183,12 @@ export function SplitReferenceResumeTemplate({ data }: ResumeTemplateProps) {
 }
 
 function toItems(value: string): string[] {
-  return value
+  return normalizeText(value)
     .split(/\n|,/g)
     .map((s) => s.trim())
     .filter(Boolean);
+}
+
+function normalizeText(value: string): string {
+  return value.replace(/\s+/g, " ").trim();
 }

@@ -4,6 +4,7 @@ import {
   type ResumeData,
   type ResumeEducation,
   type ResumeExperience,
+  type ResumeProject,
 } from "~/services/resume.service";
 import { useResume } from "./use-resume";
 
@@ -18,6 +19,9 @@ export interface ResumeFormApi {
   addEducation(): void;
   updateEducation(index: number, patch: Partial<ResumeEducation>): void;
   removeEducation(index: number): void;
+  addProject(): void;
+  updateProject(id: string, patch: Partial<ResumeProject>): void;
+  removeProject(id: string): void;
   reset(): void;
 }
 
@@ -94,6 +98,38 @@ export function useResumeForm(): ResumeFormApi {
     }));
   }, []);
 
+  const addProject = useCallback(() => {
+    resumeService.setState((prev) => ({
+      ...prev,
+      projects: [
+        ...prev.projects,
+        {
+          id: makeId(),
+          name: "",
+          role: "",
+          skillsUsed: "",
+          description: "",
+        },
+      ],
+    }));
+  }, []);
+
+  const updateProject = useCallback<ResumeFormApi["updateProject"]>((id, patch) => {
+    resumeService.setState((prev) => ({
+      ...prev,
+      projects: prev.projects.map((project) =>
+        project.id === id ? { ...project, ...patch } : project,
+      ),
+    }));
+  }, []);
+
+  const removeProject = useCallback((id: string) => {
+    resumeService.setState((prev) => ({
+      ...prev,
+      projects: prev.projects.filter((project) => project.id !== id),
+    }));
+  }, []);
+
   const reset = useCallback(() => resumeService.reset(), []);
 
   return {
@@ -105,6 +141,9 @@ export function useResumeForm(): ResumeFormApi {
     addEducation,
     updateEducation,
     removeEducation,
+    addProject,
+    updateProject,
+    removeProject,
     reset,
   };
 }

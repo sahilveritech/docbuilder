@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: "row", justifyContent: "space-between", gap: 8 },
   muted: { color: "#6B7280" },
   bullet: { marginTop: 2, lineHeight: 1.35 },
+  projectItem: { marginBottom: 7 },
 });
 
 export function ClassicResumeTemplate({ data }: ResumeTemplateProps) {
@@ -74,6 +75,24 @@ export function ClassicResumeTemplate({ data }: ResumeTemplateProps) {
                 </Text>
               </View>
               <Text>{ed.institution}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.heading}>Projects</Text>
+          {data.projects.map((project) => (
+            <View key={project.id} style={styles.projectItem}>
+              <Text style={styles.role}>
+                {project.name}
+                {project.role ? ` • ${project.role}` : ""}
+              </Text>
+              {project.skillsUsed ? (
+                <Text style={styles.muted}>Tech: {project.skillsUsed}</Text>
+              ) : null}
+              {project.description ? (
+                <Text style={styles.paragraph}>{project.description}</Text>
+              ) : null}
             </View>
           ))}
         </View>
